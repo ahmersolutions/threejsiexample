@@ -1,0 +1,161 @@
+Use Threejs to create 3D Scenes with JS and WebGL
+------------------------------------------------------------------------------------
+Documentation:
+    * https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene
+    * https://threejs.org/docs/index.html#manual/en/introduction/Loading-3D-models
+    * https://threejs.org/docs/#manual/en/introduction/WebGL-compatibility-check
+    * https://threejs.org/docs/index.html#api/en/geometries/BoxGeometry
+    * https://threejs.org/docs/index.html#api/en/lights/AmbientLight
+
+Concepts (Important):
+    * ThreeJS has default objects that you can use like Torus or Box
+    * Objects can be created in Blender and imported into the ThreeJS [Read Docs]
+    * Browser must support WebGL 2.0 to make ThreeJS work [Read Docs]
+    * You edit each layer of an item that was created in Blender
+    * To create multiple elements with ThreeJS items, create multiple renderers
+    * When creating an Object, check Geometry documention for shapes
+    * If you don't use animate(), then you will have to call render again & again
+    * No need to call renderer.render() if you use animate() function
+    * To help you with Lighting, you can use light helper to see the position of light
+    * You can draw a grid to view the prespective of your canvas
+    * Add Orbit Controls to control the movement of your canvas
+------------------------------------------------------------------------------------
+
+Installation:
+METHOD-1: Using CDN (may be for Shopify)
+        * https://threejs.org/docs/#manual/en/introduction/Installation
+        (Option 2: Import from a CDN)
+
+METHOD-2: Create a new project
+        $ npm init @vitejs/app
+            - write project name
+            - select 'vanilla'
+            - select 'javascript'
+        (go to the folder)
+        $ npm install three
+        $ npm run dev
+
+2. Setup project
+    * First let's delete all boilerplate code
+    (In the main.js & style.css)
+    * In main.js file, keep style import
+    * May be Move all files to the root folder
+    (you can keep them where they are)
+    * Go to index.html file and rename 'div' with 'app' id to 'canvas'
+    * In main.js file, import the three package.
+    # import * as THREE from 'three';
+
+
+3. Important Concepts of ThreeJS
+    * Parts to create a working ThreeJS casvas
+        1. Scene (This is like a container that holds all objects, camera & light e.t.c)
+        2. Camera (PerspectiveCamera is prefered)
+        3. Renderer (WebGLRenderer is prefered)
+    * Objects Creation
+        1. Geometry (eg. box, circle)
+        2. Material (eg. a wood design + wood texture)
+        3. Mesh (Geometry + Material)
+    (Always add each object to the scene after creation)
+    * Lighting Creation
+        1. Color
+
+4. Steps to Follow to create
+    * Create a scene
+    * Create a camera
+    * Create a renderer (to add to a div)
+    * Add Scene & Camera to the renderer
+
+5. Working Of Items & Requirements
+    * Scene
+        THREE.Scene();
+    * Camera
+        THREE.PerspectiveCamera()
+            - POV: 75,
+            - Aspect Ratio: window.innerWidth / window.innerHeight,
+            - FRUSTUM-1: 0.1
+            - FRUSTUM-2: 1000
+        camera.position.setZ(30);
+    * Renderer
+        THREE.WebGLRenderer({})
+            - canvas: document.querySelector('#app');
+        renderer.setPixelRatio(window.devicePixelRatio)
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        renderer.render(scene, camera); <---(No need to call if you use animate() function)
+    * Object
+        THREE.TorusGeometry()
+            - x: 10,
+            - y: 3,
+            - z, 16,
+            - segments, 100
+    * Material (added to the object)
+        1. THREE.MeshBasicMaterial({})
+            - color: 0xFF6347
+            - wireframe: true
+        2. THREE.MeshStandardMaterial({})
+            - color: 0xFF6347
+    * Mesh (add material & geometry)
+        const torus = THREE.Mesh(geometry, material)
+        scene.add(torus);
+    * Animate
+        function animate(){}
+            - requestAnimationFrame(animate)
+            - renderer.render(scene.camera)
+            - To Rotate the torus
+                - torus.rotation.x += 0.01
+                - torus.rotation.y += 0.005
+                - torus.rotation.z += 0.01
+        animate() <---(call it after defineing the animate() function)
+    * Lighting (works on a MeshStandardMaterial)
+        THREE.PointLight()
+            - color: 0xffffff
+        THREE.AmbientLight()
+            - color: 0xffffff
+        light.position.set(20, 20, 20)
+        scene.add(light, ambient);
+    =================================
+    Optional But Nice to have & Learn
+    =================================
+    * LightHelper (optional)
+        THREE.PointLightHelper(light)
+        scene.add(lighthelper)
+    * GridHelper (optional)
+        THREE.GridHelper(200, 50)
+        scene.add(helper)
+    * OrbitControls (optional)
+    (First import it into your project)
+    # import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        OrbitControls(camera, renderer.domElement)
+        [Now add the following in the animate() function]
+            - controls.update();
+    * Background Image (Optional)
+        THREE.TextureLoader().load('file-name.png');
+        scene.background = bgtexture <---(this is a variable)
+    * Object with Texture
+        THREE.TextureLoader().load('texture-or-name.png');
+        THREE.Mesh({
+            new THREE.BoxGeometry(3,3,3),
+            new THREE.MeshBasicMaterial({map: texture})
+        });
+        scene.add(object);
+    * Object with Texture & Normal e.g Moon + rough surface
+        THREE.TextureLoader().load('moon.png');
+        THREE.TextureLoader().load('normal.png');
+        THREE.Mesh({
+            new THREE.SphereGeometry(3,32,32),
+            new THREE.MeshStandardMaterial({map: moonTexture, normalMap: normalTexture})
+        });
+        scene.add(moon)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
